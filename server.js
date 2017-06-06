@@ -60,7 +60,7 @@ app.get("/scrape", function(req, res) {
             let result = {};
             result.headline = $(this).attr("data-title");
             result.data_id = $(this).attr("data-contentid");
-            let html = $(this).attr("data-seo-title").replace(/ /g, "-").replace(/,/g, "").replace(/'/g, "");
+            let html = $(this).attr("data-seo-title").replace(/ /g, "-").replace(/,/g, "").replace(/'/g, "").replace(/\./g, "");
             result.link = html;
             let createdAt = $(this).attr("data-timestamp");
             let formattedTime = moment(createdAt, "YYYY-MM-DDTHH:mm:ss-ZZ").format("MMMM-Do-YYYY hh:mmA");

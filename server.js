@@ -10,6 +10,7 @@ let cheerio = require("cheerio");
 let app = express();
 let PORT = process.env.PORT || 3000;
 let exphbs = require("express-handlebars");
+let moment = require("moment");
 
 app.use(logger("dev"));
 
@@ -23,8 +24,14 @@ app.use(express.static("public"));
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-mongoose.connect("mongodb://localhost/mlbScrape");
-// mongoose.connect("mongodb://heroku_ss9vnr07:hcfvfvote8cqjg9i06fn703ra6@ds161041.mlab.com:61041/heroku_ss9vnr07");
+
+if(process.env.NODE_ENV == 'production'){
+mongoose.connect("mongodb://heroku_ss9vnr07:hcfvfvote8cqjg9i06fn703ra6@ds161041.mlab.com:61041/heroku_ss9vnr07");
+}
+else{
+ mongoose.connect("mongodb://localhost/mlbScrape");
+}
+
 const db = mongoose.connection;
 
 db.on("error", function(error) {
@@ -36,29 +43,15 @@ db.once("open", function() {
 })
 
 let routes = require("./controllers/story_controller.js")
-// app.use("/", routes);
+    // app.use("/", routes);
 
 
 app.get("/", function(req, res) {
-	console.log(req)
-	console.log(res)
-    Story.find({}, function(err, data) {
-    	console.log(err)
-        console.log(data)
-        let hbsObject = {
-            story: data
-        };
-        console.log(hbsObject)
-        err ? res.json(err) : res.render("index", hbsObject)
-            // err ? res.json(err) : res.json(data);
-            // res.render("index", hbsObject)
-
+    Story.find({}).sort({ timestamp: -1 }).exec(function(err, data) {
+        // console.log(data)
+        err ? res.json(err) : res.render("index", { Story: data });
     })
-});
-
-
-
-
+})
 
 
 app.get("/scrape", function(req, res) {
@@ -67,24 +60,24 @@ app.get("/scrape", function(req, res) {
         $(".bam-article").each(function(i, element) {
             let result = {};
             result.headline = $(this).attr("data-title");
-            result.link = $(this).attr("data-url");
             result.data_id = $(this).attr("data-contentid");
+            let html = $(this).attr("data-seo-title").replace(/ /g, "-");
+            result.link = html;
+            let createdAt = $(this).attr("data-timestamp");
+            let formattedTime = moment(createdAt, "YYYY-MM-DDTHH:mm:ss-ZZ").format("MMMM-Do-YYYY hh:mmA");
             result.timestamp = $(this).attr("data-timestamp");
+            result.moment = formattedTime;
             result.author = $(this).attr("data-author");
             result.video = $(this).find(".video-link").attr("data-video-link");
             result.image = $(this).find(".main-image").attr("data-src");
             let entry = new Story(result);
             entry.save(function(err, data) {
-                err ? console.log(err) : console.log(data);
+                // err ? console.log(err) : console.log(data);
             })
         })
     })
-    res.send("Scrape Successful");
+    res.redirect("back")
 })
-
-
-
-
 
 app.get("/stories", function(req, res) {
     Story.find({}, function(err, data) {
@@ -93,8 +86,20 @@ app.get("/stories", function(req, res) {
 })
 
 app.get("/stories/:id", function(req, res) {
-    Story.findById(req.params.id).populate("comments").exec(function(err, doc) {
-        err ? res.json(err) : res.json(doc)
+    Story.findById(req.params.id).populate("comments").exec(function(err, data) {
+        console.log(data)
+        err ? res.json(err) : res.render("comments", {Story: data})
+    })
+})
+
+app.post("/stories/:id", function(req, res){
+    console.log(req.comments)
+    let newComment = new Comment(req.comments);
+    newComment.save(function(err, data){
+        err ? console.log(err) : 
+        Story.findOneAndUpdate({"_id" : req.params.id}, {$push: {"comments" : data._id}}).exec(function(err, doc){
+            // err ? console.log(err) : res.redirect("/stories/" + req.params.id)
+        })
     })
 })
 

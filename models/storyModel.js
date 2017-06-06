@@ -8,18 +8,22 @@ let storySchema = new Schema({
         },
         required: true
     },
-    link: {
-        type: String,
-        required: true
-    },
     data_id: {
         type: Number,
+        required: true
+    },
+    link: {
+        type: String,
         required: true
     },
     timestamp: {
         type: String,
         required: true
     }, 
+    moment: {
+        type: String,
+        required: true
+    },
     author: {
         type: String
     },
@@ -29,7 +33,11 @@ let storySchema = new Schema({
     image: {
         type: String
     },
-    comments: {
+    saved: {
+        type: Boolean,
+        default: false
+    },
+    comment: {
         type: Schema.Types.ObjectId,
         ref: "Comment"
     }

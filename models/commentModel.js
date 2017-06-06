@@ -3,11 +3,10 @@ const Schema = mongoose.Schema;
 let commentSchema = new Schema({
 	user: {
 		type: String,
-		required: true
+		// required: true
 	},
-	comments: {
+	comment: {
 		type: String,
-		required: true
 	}
 })
 

@@ -4,23 +4,23 @@
            <a href="http://m.mlb.com/news/article/{{Story.data_id}}/{{Story.link}}"> <h1 class="mdl-card__title-text" id="headline">{{Story.headline}}</h1></a>
         </div>
         <div class="mdl-card__supporting-text">
-            <form action="/stories/{{Story.id}}" method="POST">
+
+        </div>
+        <div class="mdl-card__actions mdl-card--border">
+                        <form action="/stories/{{Story.id}}" method="POST">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-               <input class="mdl-textfield__input" type="text" id="comments">
+               <input class="mdl-textfield__input" type="text" id="comments" name="comments">
                <label class="mdl-textfield__label" for="comments">Leave a comment...</label>
             </div>
             <p>
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="submit">Submit</button></td>
           </form>
-        </div>
-        <div class="mdl-card__actions mdl-card--border">
-            <!-- <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">3</a> -->
             <div class="mdl-layout-spacer"></div>
         </div>
     </div>
 </div>
 
-{{#each Story.comments}}
+{{#each Story.comment}}
 
 <div id="postDiv" class="mdl-card__actions">
     <div class="mdl-card mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-shadow--2dp">
@@ -28,10 +28,10 @@
            <a href="http://m.mlb.com/news/article/{{Story.data_id}}/{{Story.link}}"> <h1 class="mdl-card__title-text" id="headline">Placeholder</h1></a>
         </div>
         <div class="mdl-card__supporting-text">
-            {{this.comments}}
+            {{this.comment}}
         </div>
         <div class="mdl-card__actions mdl-card--border">
-            <form action="/stories/{{this.id}}" method="POST">
+            <form action="/stories/{{this.id}}" method="UPDATE">
             <button class="mdl-button mdl-button--icon mdl-button--colored"><i class="material-icons">delete_forever</i></button>
             </form>
         </div>

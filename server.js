@@ -86,19 +86,24 @@ app.get("/stories", function(req, res) {
 })
 
 app.get("/stories/:id", function(req, res) {
-    Story.findById(req.params.id).populate("comments").exec(function(err, data) {
-        console.log(data)
+    Story.findById(req.params.id).populate("comment").exec(function(err, data) {
+        // console.log(data)
         err ? res.json(err) : res.render("comments", {Story: data})
     })
 })
 
 app.post("/stories/:id", function(req, res){
-    console.log(req.comments)
-    let newComment = new Comment(req.comments);
-    newComment.save(function(err, data){
+    // console.log(req.body.comments)
+    // console.log(req.params.id)
+    let newComment = {};
+    newComment.comment= req.body.comments;
+    let saveComment = new Comment(newComment);
+    saveComment.save(function(err, data){
+        console.log(data._id)
         err ? console.log(err) : 
-        Story.findOneAndUpdate({"_id" : req.params.id}, {$push: {"comments" : data._id}}).exec(function(err, doc){
-            // err ? console.log(err) : res.redirect("/stories/" + req.params.id)
+        Story.findOneAndUpdate({"_id" : req.params.id}, {$push: {"comment" : data._id}}).exec(function(err, doc){
+            console.log(doc)
+            err ? console.log(err) : res.redirect("/stories/" + req.params.id)
         })
     })
 })

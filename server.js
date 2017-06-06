@@ -25,11 +25,10 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 
-if(process.env.NODE_ENV == 'production'){
-mongoose.connect("mongodb://heroku_ss9vnr07:hcfvfvote8cqjg9i06fn703ra6@ds161041.mlab.com:61041/heroku_ss9vnr07");
-}
-else{
- mongoose.connect("mongodb://localhost/mlbScrape");
+if (process.env.NODE_ENV == 'production') {
+    mongoose.connect("mongodb://heroku_ss9vnr07:hcfvfvote8cqjg9i06fn703ra6@ds161041.mlab.com:61041/heroku_ss9vnr07");
+} else {
+    mongoose.connect("mongodb://localhost/mlbScrape");
 }
 
 const db = mongoose.connection;
@@ -61,7 +60,7 @@ app.get("/scrape", function(req, res) {
             let result = {};
             result.headline = $(this).attr("data-title");
             result.data_id = $(this).attr("data-contentid");
-            let html = $(this).attr("data-seo-title").replace(/ /g, "-");
+            let html = $(this).attr("data-seo-title").replace(/ /g, "-").replace(/,/g, "").replace(/'/g, "");
             result.link = html;
             let createdAt = $(this).attr("data-timestamp");
             let formattedTime = moment(createdAt, "YYYY-MM-DDTHH:mm:ss-ZZ").format("MMMM-Do-YYYY hh:mmA");
@@ -88,26 +87,44 @@ app.get("/stories", function(req, res) {
 app.get("/stories/:id", function(req, res) {
     Story.findById(req.params.id).populate("comment").exec(function(err, data) {
         // console.log(data)
-        err ? res.json(err) : res.render("comments", {Story: data})
+        err ? res.json(err) : res.render("comments", { Story: data })
     })
 })
 
-app.post("/stories/:id", function(req, res){
+app.post("/stories/:id", function(req, res) {
     // console.log(req.body.comments)
     // console.log(req.params.id)
     let newComment = {};
-    newComment.comment= req.body.comments;
+    newComment.comment = req.body.comments;
     let saveComment = new Comment(newComment);
-    saveComment.save(function(err, data){
+    saveComment.save(function(err, data) {
         console.log(data._id)
-        err ? console.log(err) : 
-        Story.findOneAndUpdate({"_id" : req.params.id}, {$push: {"comment" : data._id}}).exec(function(err, doc){
-            console.log(doc)
-            err ? console.log(err) : res.redirect("/stories/" + req.params.id)
-        })
+        err ? console.log(err) :
+            Story.findOneAndUpdate({ "_id": req.params.id }, { $push: { "comment": data._id } }).exec(function(err, doc) {
+                console.log(doc)
+                err ? console.log(err) : res.redirect("/stories/" + req.params.id)
+            })
     })
 })
 
+app.get("/saved", function(req, res) {
+    Story.find({ 'saved': true }, function(err, doc) {
+        err ? console.log(err) : res.render("favorites", { favorites: doc })
+    })
+})
+
+
+app.post('/saved/:id', function(req, res) {
+    Story.update({ '_id': req.params.id }, { $set: { 'saved': true } }, function(err, doc) {
+        res.redirect('/saved');
+    })
+});
+
+app.post('/unsaved/:id', function(req, res) {
+    Story.update({ '_id': req.params.id }, { $set: { 'saved': false } }, function(err, doc) {
+        res.redirect('/saved');
+    });
+});
 
 app.listen(process.env.PORT || PORT, function() {
     console.log("App running on port 3000!");

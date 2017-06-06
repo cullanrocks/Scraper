@@ -1,0 +1,33 @@
+<div class="mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--6-phone">
+    <h1 id="main-headers">Your favorite articles:</h1>
+</div>
+<div class="mdl-grid">
+    {{#each favorites}}
+		<div id="postDiv" class="mdl-card__actions">
+    <div class="mdl-card mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-shadow--2dp">
+        <div class="mdl-card__title">
+           <a href="http://m.mlb.com/news/article/{{this.data_id}}/{{this.link}}"> <h1 class="mdl-card__title-text" id="headline">{{this.headline}}</h1></a>
+            <br>{{this.moment}} ET
+        </div>
+        <div class="mdl-card__supporting-text">
+            <p id="article">Descriptive blah</p>
+        </div>
+        <div class="mdl-card__actions mdl-card--border">
+            <!-- <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">3</a> -->
+            <div class="mdl-layout-spacer"></div>
+			<form action="/unsaved/{{this.id}}" method="POST">
+          		<button class="mdl-button mdl-button--icon mdl-button--colored"><i class="material-icons">favorite</i></button>
+			</form>
+			<form action="/stories/{{this.id}}" method="GET">
+            <button class="mdl-button mdl-button--icon mdl-button--colored"><i class="material-icons">textsms</i></button>
+            </form>
+        </div>
+    </div>
+</div>
+    {{/each}}
+</div>
+
+
+
+
+

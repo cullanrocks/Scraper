@@ -109,6 +109,6 @@ app.post("/stories/:id", function(req, res){
 })
 
 
-app.listen(PORT, function() {
+app.listen(process.env.PORT || PORT, function() {
     console.log("App running on port 3000!");
 });

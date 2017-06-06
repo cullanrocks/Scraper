@@ -1,7 +1,7 @@
 let express = require("express");
 let bodyParser = require("body-parser");
 let mongoose = require("mongoose");
-let logger = require("morgan");
+// let logger = require("morgan");
 mongoose.Promise = Promise;
 let Story = require("./models/storyModel.js");
 let Comment = require("./models/commentModel.js");
@@ -12,7 +12,7 @@ let PORT = process.env.PORT || 3000;
 let exphbs = require("express-handlebars");
 let moment = require("moment");
 
-app.use(logger("dev"));
+// app.use(logger("dev"));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

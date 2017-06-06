@@ -24,6 +24,9 @@ let storySchema = new Schema({
         type: String,
         required: true
     },
+    text: {
+        type: String
+    },
     author: {
         type: String
     },

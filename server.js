@@ -20,7 +20,7 @@ app.use(bodyParser.text());
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 app.use(express.static(__dirname + '/public'));
 
-app.use(express.static("public"));
+app.use(express.static("/public"));
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
@@ -66,6 +66,7 @@ app.get("/scrape", function(req, res) {
             let formattedTime = moment(createdAt, "YYYY-MM-DDTHH:mm:ss-ZZ").format("MMMM-Do-YYYY hh:mmA");
             result.timestamp = $(this).attr("data-timestamp");
             result.moment = formattedTime;
+            result.text = $(this).find(".default-styles").text().replace(/Full Game Coverage/, "");
             result.author = $(this).attr("data-author");
             result.video = $(this).find(".video-link").attr("data-video-link");
             result.image = $(this).find(".main-image").attr("data-src");

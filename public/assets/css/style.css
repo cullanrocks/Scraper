@@ -2,7 +2,7 @@ body {
     background-color: #F2F6D0
 }
 
-#wrapper {
+/*#wrapper {
     width: 960px;
     margin-left: auto;
     margin-right: auto;
@@ -20,6 +20,41 @@ body {
     float: right;
     width: 30%;
 }
+*/
+h1,
+h2 {
+    text-align: center;
+    /*color: #A90100;*/
+}
+
+.mdl-card__title {
+    text-align: center;
+}
+
+.mdl-card__actions mdl-card--border {
+    margin: 0 auto;
+    text-align: center;
+}
+
+form {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.mdl-button__ripple-container {
+    /*color: #B2FF59;*/
+    /*background-color: #795548;*/
+}
+
+.mdl-button {
+
+}
+
+.form {
+    display: inline;
+}
+
+
 
 textarea,
 input {

@@ -4,7 +4,7 @@
            <a href="http://m.mlb.com/news/article/{{Story.data_id}}/{{Story.link}}"> <h1 class="mdl-card__title-text" id="headline">{{Story.headline}}</h1></a>
         </div>
         <div class="mdl-card__supporting-text">
-
+            {{Story.text}}
         </div>
         <div class="mdl-card__actions mdl-card--border">
                         <form action="/stories/{{Story.id}}" method="POST">
